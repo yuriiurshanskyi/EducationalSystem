@@ -20,7 +20,7 @@ services.AddIdentityConfiguration();
 services.AddIdentityServerConfiguration(connectionString);
 services.RegisterDependencies();
 
-//services.AddAutoMapper(typeof(ApiToEntityProfile), typeof(EntityToViewModelProfile));
+services.AddAutoMapper(typeof(ApiToEntityProfile), typeof(EntityToViewModelProfile));
 
 services.AddCors();
 
