@@ -1,6 +1,10 @@
 ﻿using EducationalSystem.Infrastructure;
 using EducationalSystem.Infrastructure.Entities;
+using EducationalSystem.Services.DomainModels;
+using ExpressionBuilder.Generics;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EducationalSystem.Services
 {
@@ -21,10 +25,29 @@ namespace EducationalSystem.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<CourseEntity>> ListCoursesAsync(int skip, int take)
+        public async Task<List<CourseEntity>> ListCoursesAsync(FilterModel model)
         {
-            return await _context.Courses.Skip(skip)
-                                  .Take(take)
+
+            var query = PredicateBuilder.New<CourseEntity>();
+
+            if(model.CategoryId is not null)
+            {
+                query = query.And(x => x.CategoryId == model.CategoryId);
+            }
+
+            if (model.Ects is not null)
+            {
+                query = query.And(x => x.Ects <= model.Ects);
+            }
+
+            if (model.Type is not null)
+            {
+                query = query.And(x => x.CourseType == model.Type);
+            }
+
+            return await _context.Courses.Where(query)
+                                  .Skip(model.Skip)
+                                  .Take(model.Take)
                                   .ToListAsync();
         }
 
@@ -41,7 +64,6 @@ namespace EducationalSystem.Services
             entity.Description = model.Description;
             entity.EndAt = model.EndAt;
             entity.BeginsAt = model.BeginsAt;
-            entity.Links = model.Links;
             entity.UpdatedDate = DateTime.Now;
 
             await _context.SaveChangesAsync();
@@ -72,10 +94,11 @@ namespace EducationalSystem.Services
                                             .Select(x => x.CategoryId)
                                             .ToList();
 
-            var courses = await _context.Courses.OrderByDescending(x => categoryPoints.IndexOf(x.CategoryId))
+            var courses = (await _context.Courses.ToListAsync())
+                                                .OrderByDescending(x => categoryPoints.IndexOf(x.CategoryId))
                                                 .Skip(skip)
                                                 .Take(take)
-                                                .ToListAsync();
+                                                .ToList();
 
             return courses;
 

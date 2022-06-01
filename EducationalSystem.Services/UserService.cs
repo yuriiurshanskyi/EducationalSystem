@@ -19,6 +19,8 @@ namespace EducationalSystem.Services
         public async Task CreateUserAsync(UserEntity user, string password)
         {
             await _userManager.CreateAsync(user, password);
+
+            await _userManager.AddToRoleAsync(user, "RegisteredUser");
         }
 
         public async Task DeleteUserAsync(int userId)

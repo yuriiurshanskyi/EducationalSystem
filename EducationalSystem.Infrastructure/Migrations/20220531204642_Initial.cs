@@ -20,7 +20,8 @@ namespace EducationalSystem.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CategoryCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,17 +188,18 @@ namespace EducationalSystem.Infrastructure.Migrations
                 name: "Courses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedDate = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     UpdatedDate = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    BeginsAt = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndAt = table.Column<DateOnly>(type: "date", nullable: false),
-                    Links = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    BeginsAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    EndAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Ects = table.Column<int>(type: "int", nullable: false),
+                    CourseType = table.Column<int>(type: "int", nullable: false),
                     CreatorId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -211,8 +213,8 @@ namespace EducationalSystem.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Courses_Users_Id",
-                        column: x => x.Id,
+                        name: "FK_Courses_Users_CreatorId",
+                        column: x => x.CreatorId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -248,7 +250,8 @@ namespace EducationalSystem.Infrastructure.Migrations
                 name: "Registrations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     RegistrationDate = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     RegistreeId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false)
@@ -257,14 +260,14 @@ namespace EducationalSystem.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Registrations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Registrations_Courses_Id",
-                        column: x => x.Id,
+                        name: "FK_Registrations_Courses_CourseId",
+                        column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Registrations_Users_Id",
-                        column: x => x.Id,
+                        name: "FK_Registrations_Users_RegistreeId",
+                        column: x => x.RegistreeId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -290,6 +293,21 @@ namespace EducationalSystem.Infrastructure.Migrations
                 name: "IX_Courses_CategoryId",
                 table: "Courses",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_CreatorId",
+                table: "Courses",
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Registrations_CourseId",
+                table: "Registrations",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Registrations_RegistreeId",
+                table: "Registrations",
+                column: "RegistreeId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",

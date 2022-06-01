@@ -14,11 +14,11 @@ namespace EducationalSystem.Infrastructure.Configurations
 
             builder.HasOne(x => x.Registree)
                 .WithMany(u => u.Registrations)
-                .HasForeignKey(r => r.Id);
+                .HasForeignKey(r => r.RegistreeId);
 
             builder.HasOne(x => x.Course)
                 .WithMany(c => c.Registrations)
-                .HasForeignKey(r => r.Id);
+                .HasForeignKey(r => r.CourseId);
         }
     }
 }

@@ -2,6 +2,7 @@
 using EducationalSystem.ApiModels;
 using EducationalSystem.Infrastructure.Entities;
 using EducationalSystem.Services;
+using EducationalSystem.Services.DomainModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -22,7 +23,7 @@ namespace EducationalSystem.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize(Roles = "Provider")]
+        //[Authorize(Roles = "Provider")]
         public async Task<IActionResult> CreateCourseAsync([FromBody] PostCourseModel model)
         {
             int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -51,7 +52,7 @@ namespace EducationalSystem.Controllers
         {
             var result = await _courseService.GetCourseAsync(id);
 
-            return Ok(result);
+            return Ok(_mapper.Map<CourseViewModel>(result));
         }
 
         [HttpGet("listRecommended")]
@@ -62,16 +63,17 @@ namespace EducationalSystem.Controllers
 
             var result = await _courseService.ListRecommendedCoursesAsync(userId, skip, take);
 
-            return Ok(result);
+            return Ok(_mapper.Map<List<CourseViewModel>>(result));
         }
 
+        [AllowAnonymous]
         [HttpGet("list")]
         [Authorize(Roles = "RegisteredUser")]
-        public async Task<IActionResult> GetCoursesAsync(int skip, int take)
+        public async Task<IActionResult> GetCoursesAsync([FromBody] FilterModel model)
         {
-            var result = await _courseService.ListCoursesAsync(skip, take);
+            var result = await _courseService.ListCoursesAsync(model);
 
-            return Ok(result);
+            return Ok(_mapper.Map<List<CourseViewModel>>(result));
         }
 
         [HttpDelete("delete")]

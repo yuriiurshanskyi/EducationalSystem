@@ -1,4 +1,6 @@
-﻿namespace EducationalSystem.Infrastructure.Entities
+﻿using static EducationalSystem.Infrastructure.Enums.CourseTypes;
+
+namespace EducationalSystem.Infrastructure.Entities
 {
     public class CourseEntity
     {
@@ -7,9 +9,10 @@
         public string Description { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
         public DateTimeOffset UpdatedDate { get; set; }
-        public DateOnly BeginsAt { get; set; }
-        public DateOnly EndAt { get; set; }
-        public string Links { get; set; }
+        public DateTime BeginsAt { get; set; }
+        public DateTime EndAt { get; set; }
+        public int Ects { get; set; }
+        public CourseType CourseType { get; set; }
         public int CreatorId { get; set; }
         public int CategoryId { get; set; }
         public virtual UserEntity CreatedBy { get; set; }

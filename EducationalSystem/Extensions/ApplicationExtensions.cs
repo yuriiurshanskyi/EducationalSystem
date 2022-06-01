@@ -24,9 +24,9 @@ namespace EducationalSystem.Extensions
             var configurationDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
             configurationDbContext.Database.Migrate();
 
-            if(!configurationDbContext.IdentityResources.Any())
+            if (!configurationDbContext.IdentityResources.Any())
             {
-                foreach(var resorce in IdentityServerConfig.GetIdentityResources())
+                foreach (var resorce in IdentityServerConfig.GetIdentityResources())
                 {
                     configurationDbContext.IdentityResources.Add(resorce.ToEntity());
                 }
@@ -69,12 +69,9 @@ namespace EducationalSystem.Extensions
                 SeedData.InitializeAsync(appDbContext,
                     serviceScope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>(),
                     serviceScope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>()).Wait();
-            }    
-
-            if(!appDbContext.Categories.Any())
-            {
-                SeedData.InitializeCategoriesAsync(appDbContext).Wait();
             }
+
+            SeedData.InitializeDbAsync(appDbContext).Wait();
         }
     }
 }

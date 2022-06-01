@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateOnly MemberFrom { get; set; }
+        public string Role { get; set; }
+        public DateTimeOffset MemberFrom { get; set; }
     }
 }

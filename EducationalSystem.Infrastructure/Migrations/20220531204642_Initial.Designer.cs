@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EducationalSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(EducationContext))]
-    [Migration("20220519150853_Initial")]
+    [Migration("20220531204642_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace EducationalSystem.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("CategoryCode")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -39,12 +42,16 @@ namespace EducationalSystem.Infrastructure.Migrations
             modelBuilder.Entity("EducationalSystem.Infrastructure.Entities.CourseEntity", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("BeginsAt")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("BeginsAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseType")
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedDate")
@@ -57,12 +64,11 @@ namespace EducationalSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateOnly>("EndAt")
-                        .HasColumnType("date");
+                    b.Property<int>("Ects")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Links")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<DateTime>("EndAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -75,12 +81,15 @@ namespace EducationalSystem.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CreatorId");
+
                     b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("EducationalSystem.Infrastructure.Entities.RegistrationEntity", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("CourseId")
@@ -93,6 +102,10 @@ namespace EducationalSystem.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("RegistreeId");
 
                     b.ToTable("Registrations", (string)null);
                 });
@@ -312,7 +325,7 @@ namespace EducationalSystem.Infrastructure.Migrations
 
                     b.HasOne("EducationalSystem.Infrastructure.Entities.UserEntity", "CreatedBy")
                         .WithMany("Courses")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -325,13 +338,13 @@ namespace EducationalSystem.Infrastructure.Migrations
                 {
                     b.HasOne("EducationalSystem.Infrastructure.Entities.CourseEntity", "Course")
                         .WithMany("Registrations")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EducationalSystem.Infrastructure.Entities.UserEntity", "Registree")
                         .WithMany("Registrations")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("RegistreeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

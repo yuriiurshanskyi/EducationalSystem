@@ -1,15 +1,14 @@
-using AutoMapper;
 using EducationalSystem.Extensions;
 using EducationalSystem.Mapper;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 var services  = builder.Services;
 
-services.AddControllers();
+services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); 
+
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
@@ -26,7 +25,6 @@ services.AddCors();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

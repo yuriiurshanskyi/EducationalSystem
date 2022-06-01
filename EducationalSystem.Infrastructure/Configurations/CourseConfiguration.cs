@@ -12,14 +12,9 @@ namespace EducationalSystem.Infrastructure.Configurations
 
             builder.HasKey(x => x.Id);
 
-            builder.HasMany(c => c.Registrations)
-                .WithOne(r => r.Course)
-                .HasForeignKey(r => r.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne(c => c.CreatedBy)
                 .WithMany(u => u.Courses)
-                .HasForeignKey(c => c.Id);
+                .HasForeignKey(c => c.CreatorId);
 
             builder.HasOne(c => c.Category)
                 .WithMany(cc => cc.Courses)
