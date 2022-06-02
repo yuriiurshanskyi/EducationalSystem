@@ -1,4 +1,6 @@
-﻿namespace EducationalSystem.ApiModels
+﻿using static EducationalSystem.Infrastructure.Enums.CourseTypes;
+
+namespace EducationalSystem.ApiModels
 {
     public class CourseViewModel
     {
@@ -8,6 +10,8 @@
         public DateTimeOffset CreatedAt { get; set; }
         public DateTime BeginsAt { get; set; }
         public DateTime EndAt { get; set; }
+        public int Ects { get; set; }
+        public CourseType Type { get; set; }
         public CategoryViewModel Category { get; set; }
         public CreatorViewModel Creator { get; set; }
     }
